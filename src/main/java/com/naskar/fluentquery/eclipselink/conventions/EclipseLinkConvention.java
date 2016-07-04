@@ -56,11 +56,21 @@ public class EclipseLinkConvention implements Convention {
 						attributeName.substring(0, 1).toUpperCase() + 
 						attributeName.substring(1);
 					DatabaseField field = dm.getField();
-					if(field == null) {
-						System.out.println("tt");
-					} else {
-						fields.put(method, field.getName());						
+					if(field != null) {
+						fields.put(method, field.getName());
+						
+					} else if(dm.getFields() != null) {
+						List<DatabaseField> fieldsMappings = dm.getFields();
+						if(fieldsMappings.size() > 1) {
+							// TODO: chave composta
+							throw new UnsupportedOperationException();
+							
+						} else if(!fieldsMappings.isEmpty()) {
+							fields.put(method, fieldsMappings.get(0).getName());
+							
+						}
 					}
+					
 					
 				}
 				
@@ -81,6 +91,8 @@ public class EclipseLinkConvention implements Convention {
 	
 	@Override
 	public String getNameFromMethod(List<Method> methods) {
+		throw new UnsupportedOperationException();
+		/* TODO: references
 		String name = null;
 		
 		if(!methods.isEmpty()) {
@@ -88,6 +100,7 @@ public class EclipseLinkConvention implements Convention {
 		}
 		
 		return name;
+		*/
 	}
 	
 	@Override
