@@ -91,8 +91,10 @@ public class EclipseLinkConvention implements Convention {
 	
 	@Override
 	public String getNameFromMethod(List<Method> methods) {
-		throw new UnsupportedOperationException();
-		/* TODO: references
+		if(methods.size() > 1) {
+			throw new UnsupportedOperationException(methods.toString());
+		}
+		
 		String name = null;
 		
 		if(!methods.isEmpty()) {
@@ -100,7 +102,6 @@ public class EclipseLinkConvention implements Convention {
 		}
 		
 		return name;
-		*/
 	}
 	
 	@Override
