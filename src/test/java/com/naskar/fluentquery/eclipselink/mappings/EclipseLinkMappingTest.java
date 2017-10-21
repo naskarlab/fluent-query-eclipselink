@@ -14,7 +14,6 @@ import com.naskar.fluentquery.QueryBuilder;
 import com.naskar.fluentquery.converters.NativeSQL;
 import com.naskar.fluentquery.converters.NativeSQLResult;
 import com.naskar.fluentquery.eclipselink.conventions.EclipseLinkConvention;
-import com.naskar.fluentquery.eclipselink.mappings.domain.Account;
 import com.naskar.fluentquery.eclipselink.mappings.domain.Customer;
 
 public class EclipseLinkMappingTest {
