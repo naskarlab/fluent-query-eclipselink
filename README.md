@@ -19,7 +19,7 @@ private EntityManager em;
 
 @Before
 public void setup() {
-	EntityManagerFactory factory = Persistence.createEntityManagerFactory("test");
+    EntityManagerFactory factory = Persistence.createEntityManagerFactory("test");
     this.mc = new EclipseLinkConvention();
     this.mc.addAll(factory);
     this.em = factory.createEntityManager();
