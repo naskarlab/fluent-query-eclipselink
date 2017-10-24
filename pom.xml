@@ -26,10 +26,11 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>com.naskar</groupId>
-			<artifactId>fluent-query</artifactId>
-			<version>0.1.0</version>
+		    <groupId>com.github.naskarlab</groupId>
+		    <artifactId>fluent-query</artifactId>
+		    <version>0.1.0</version>
 		</dependency>
+
 		
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
@@ -42,5 +43,12 @@
 			<version>2.1.1</version>
 		</dependency>
 	</dependencies>
+	
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
 	
 </project>
