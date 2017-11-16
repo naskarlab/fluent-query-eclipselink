@@ -2,6 +2,8 @@
 
 Create Queries using only POJO classes of the JPA mappings with eclipselink.  
 
+See more example in: [Fluent Query](https://github.com/naskarlab/fluent-query)
+
 ## Features
 
 * Configuration over code: independence business code of the infrastructure code;
