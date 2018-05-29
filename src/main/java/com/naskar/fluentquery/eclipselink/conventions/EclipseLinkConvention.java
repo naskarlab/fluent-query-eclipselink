@@ -31,6 +31,8 @@ public class EclipseLinkConvention implements Convention {
 		EntityManager em = null;
 		try {
 			
+			boolean toUpperCase = System.getProperty("com.naskar.fluentquery.eclipselink.uppercase", "false").equalsIgnoreCase("true");
+			
 			em = factory.createEntityManager();
 			
 			Session session = em.unwrap(Session.class);
@@ -45,7 +47,11 @@ public class EclipseLinkConvention implements Convention {
 				Class clazz = e.getKey();
 				ClassDescriptor cd = e.getValue();
 				
-				clazzes.put(clazz.getName(), e.getValue().getTableName());
+				String tableName = e.getValue().getTableName();
+				if(toUpperCase) {
+					tableName = tableName.toUpperCase();
+				}
+				clazzes.put(clazz.getName(), tableName);
 				
 				Map<String, String> fields = new HashMap<String, String>();
 				methods.put(clazz.getName(), fields);
@@ -57,7 +63,11 @@ public class EclipseLinkConvention implements Convention {
 						attributeName.substring(1);
 					DatabaseField field = dm.getField();
 					if(field != null) {
-						fields.put(method, field.getName());
+						String columnName = field.getName();
+						if(toUpperCase) {
+							columnName = columnName.toUpperCase();
+						}
+						fields.put(method, columnName);
 						
 					} else if(dm.getFields() != null) {
 						List<DatabaseField> fieldsMappings = dm.getFields();
@@ -66,7 +76,11 @@ public class EclipseLinkConvention implements Convention {
 							throw new UnsupportedOperationException();
 							
 						} else if(!fieldsMappings.isEmpty()) {
-							fields.put(method, fieldsMappings.get(0).getName());
+							String columnName = fieldsMappings.get(0).getName();
+							if(toUpperCase) {
+								columnName = columnName.toUpperCase();
+							}
+							fields.put(method, columnName);
 							
 						}
 					}
