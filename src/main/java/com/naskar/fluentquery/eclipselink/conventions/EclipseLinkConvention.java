@@ -26,76 +26,87 @@ public class EclipseLinkConvention implements Convention {
 		this.methods = new HashMap<String, Map<String, String>>();
 	}
 	
-	@SuppressWarnings("rawtypes")
+	@Deprecated
+	/* Use addAll(EntityManager em) */
 	public void addAll(EntityManagerFactory factory) {
 		EntityManager em = null;
 		try {
 			
-			boolean toUpperCase = System.getProperty("com.naskar.fluentquery.eclipselink.uppercase", "false").equalsIgnoreCase("true");
-			
 			em = factory.createEntityManager();
-			
-			Session session = em.unwrap(Session.class);
-			if(session == null) {
-				throw new RuntimeException("No eclipselink session found.");
-			}
-					
-			Map<Class, ClassDescriptor> descriptors = session.getDescriptors();
-			
-			for(Entry<Class, ClassDescriptor> e : descriptors.entrySet()) {
-				
-				Class clazz = e.getKey();
-				ClassDescriptor cd = e.getValue();
-				
-				String tableName = e.getValue().getTableName();
-				if(toUpperCase) {
-					tableName = tableName.toUpperCase();
-				}
-				clazzes.put(clazz.getName(), tableName);
-				
-				Map<String, String> fields = new HashMap<String, String>();
-				methods.put(clazz.getName(), fields);
-				
-				for(DatabaseMapping dm : cd.getMappings()) {
-					String attributeName = dm.getAttributeName();
-					String method = "get" + 
-						attributeName.substring(0, 1).toUpperCase() + 
-						attributeName.substring(1);
-					DatabaseField field = dm.getField();
-					if(field != null) {
-						String columnName = field.getName();
-						if(toUpperCase) {
-							columnName = columnName.toUpperCase();
-						}
-						fields.put(method, columnName);
-						
-					} else if(dm.getFields() != null) {
-						List<DatabaseField> fieldsMappings = dm.getFields();
-						if(fieldsMappings.size() > 1) {
-							// TODO: chave composta
-							throw new UnsupportedOperationException();
-							
-						} else if(!fieldsMappings.isEmpty()) {
-							String columnName = fieldsMappings.get(0).getName();
-							if(toUpperCase) {
-								columnName = columnName.toUpperCase();
-							}
-							fields.put(method, columnName);
-							
-						}
-					}
-					
-					
-				}
-				
-			}
+			addAll(getSession(em));
 			
 		} finally {
 			if(em != null) {
 				em.close();
 			}
 		}
+	}
+	
+	public void addAll(EntityManager em) {
+		addAll(getSession(em));
+	}
+
+	private Session getSession(EntityManager em) {
+		Session session = em.unwrap(Session.class);
+		if(session == null) {
+			throw new RuntimeException("No eclipselink session found.");
+		}
+		return session;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public void addAll(Session session) {
+		boolean toUpperCase = System.getProperty("com.naskar.fluentquery.eclipselink.uppercase", "false").equalsIgnoreCase("true");
 		
+		Map<Class, ClassDescriptor> descriptors = session.getDescriptors();
+		
+		for(Entry<Class, ClassDescriptor> e : descriptors.entrySet()) {
+			
+			Class clazz = e.getKey();
+			ClassDescriptor cd = e.getValue();
+			
+			String tableName = (String)cd.getTableNames().get(0);
+			if(toUpperCase) {
+				tableName = tableName.toUpperCase();
+			}
+			clazzes.put(clazz.getName(), tableName);
+			
+			Map<String, String> fields = new HashMap<String, String>();
+			methods.put(clazz.getName(), fields);
+			
+			for(DatabaseMapping dm : cd.getMappings()) {
+				String attributeName = dm.getAttributeName();
+				String method = "get" + 
+					attributeName.substring(0, 1).toUpperCase() + 
+					attributeName.substring(1);
+				DatabaseField field = dm.getField();
+				if(field != null) {
+					String columnName = field.getName();
+					if(toUpperCase) {
+						columnName = columnName.toUpperCase();
+					}
+					fields.put(method, columnName);
+					
+				} else if(dm.getFields() != null) {
+					List<DatabaseField> fieldsMappings = dm.getFields();
+					if(fieldsMappings.size() > 1) {
+						// TODO: chave composta
+						throw new UnsupportedOperationException();
+						
+					} else if(!fieldsMappings.isEmpty()) {
+						String columnName = fieldsMappings.get(0).getName();
+						if(toUpperCase) {
+							columnName = columnName.toUpperCase();
+						}
+						fields.put(method, columnName);
+						
+					}
+				}
+				
+				
+			}
+			
+		}
 	}
 	
 	@Override
